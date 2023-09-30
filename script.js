@@ -1,23 +1,46 @@
-// Wrap all code that interacts with the DOM in a call to jQuery to ensure that
-// the code isn't run until the browser has finished rendering all the elements
-// in the html.
 $(function () {
-  // TODO: Add a listener for click events on the save button. This code should
-  // use the id in the containing time-block as a key to save the user input in
-  // local storage. HINT: What does `this` reference in the click listener
-  // function? How can DOM traversal be used to get the "hour-x" id of the
-  // time-block containing the button that was clicked? How might the id be
-  // useful when saving the description in local storage?
-  //
-  // TODO: Add code to apply the past, present, or future class to each time
-  // block by comparing the id to the current hour. HINTS: How can the id
-  // attribute of each time-block be used to conditionally add or remove the
-  // past, present, and future classes? How can Day.js be used to get the
-  // current hour in 24-hour time?
-  //
-  // TODO: Add code to get any user input that was saved in localStorage and set
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
-  //
-  // TODO: Add code to display the current date in the header of the page.
+  var currentDate = dayjs().format("MMM, D YYYY");
+  var timeDay = [document.querySelector("#hour-9"), document.querySelector("#hour-10"), document.querySelector("#hour-11"), document.querySelector("#hour-12"),
+  document.querySelector("#hour-1"), document.querySelector("#hour-2"), document.querySelector("#hour-3"),
+   document.querySelector("#hour-4"), document.querySelector("#hour-5"),]; //An array containing all of the slots for time from 9-5
+  var hour = ["9", "10", "11", "12", "13", "14", "15", "16", "17"]; //An array for time of day for each hour
+  $("#currentDate").text(currentDate);
+
+  const saveBtn = document.querySelectorAll(".saveBtn");  //Trying to add click functionality to all of the save buttons
+
+  saveBtn.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      console.log("Saved");
+      var userInput = this.previousElementSibling.value;
+      var textAreaId = this.previousElementSibling.id;
+
+      localStorage.setItem(textAreaId, userInput);
+      console.log(userInput);
+      console.log(textAreaId);
+    });
+  });
+
+  for (i = 0; i < hour.length; i++) {
+    if (dayjs().hour(hour[i]).isBefore(dayjs())) {
+
+      timeDay[i].classList.add("past");
+
+    }
+    else if (dayjs().hour(hour[i]).isAfter(dayjs())) {
+
+      timeDay[i].classList.add("future");
+
+    }
+    else {
+
+      timeDay[i].classList.add("present");
+
+    }
+
+    var currentValue = localStorage.getItem(`text${hour[i]}`); //Grabbing the value for Text
+    var currentId = `text${hour[i]}`; //Grabbing the ID for text.
+
+    document.getElementById(currentId).value = currentValue; //Placing the value on the id into the textarea.
+  }
+
 });
